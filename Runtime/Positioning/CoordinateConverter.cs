@@ -49,6 +49,7 @@ namespace JelleKUL.MeshAlignment
 
         /// <summary>
         /// Concert spherical coortinates to lambert72 coordinates
+        /// http://zoologie.umons.ac.be/tc/algorithms.aspx#M2
         /// </summary>
         /// <param name="lng">the longitude in decimal belgium Datum</param>
         /// <param name="lat">the latitude in decimal belgium Datum</param>
