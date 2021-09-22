@@ -1,19 +1,17 @@
 {
-    "name": "com.unity.package-example",
-    "version": "1.2.3",
-    "displayName": "Package Example",
-    "description": "This is an example package",
-    "unity": "2019.1",
-    "unityRelease": "0b5",
-    "dependencies": {},
-    "keywords": [
-        "keyword1",
-        "keyword2",
-        "keyword3"
-    ],
-    "author": {
-        "name": "Unity",
-        "email": "unity@example.com",
-        "url": "https://www.unity3d.com"
-    }
+  "name": "com.jelle-kul.mesh-alignment",
+  "version": "0.0.1",
+  "displayName": "Mesh Alignment",
+  "description": "Tools to align new meshes to georeferenced meshes or pointclouds",
+  "keywords": [
+    "mesh",
+    "georeference",
+    "alignment"
+  ],
+  "author": {
+    "name": "Jelle Vermandere",
+    "email": "jelle.vermandere@kuleuven.be",
+    "url": "http://www.jellever.be"
+  },
+  "type": "tool"
 }
