@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace JelleKUL.MeshAlignment
 {
@@ -8,8 +9,15 @@ namespace JelleKUL.MeshAlignment
     [RequireComponent(typeof(UnityHttpSender))]
     public class LocationSender : MonoBehaviour
     {
+        [SerializeField]
+        private Text locationText;
+
         private GlobalPosition globalPosition;
         private UnityHttpSender sender;
+
+        [SerializeField]
+        private string baseUrl = "http://192.168.0.237", port = "1234";
+
 
         // Start is called before the first frame update
         void Start()
@@ -20,6 +28,7 @@ namespace JelleKUL.MeshAlignment
 
         public void SendLocation()
         {
+            locationText.text = "Finding Location...";
             StartCoroutine(globalPosition.FindGlobalPosition(OnLocationFound));
         }
 
@@ -27,10 +36,22 @@ namespace JelleKUL.MeshAlignment
         {
             if (succes)
             {
-                Debug.Log("Sending LocationInfo:" + JsonUtility.ToJson(globalPosition.lastLocation));
-                sender.SendPostRequest(globalPosition.positionInfo, "");
+                locationText.text = "LocationInfo:" + JsonUtility.ToJson(globalPosition.positionInfo);
+
+                Debug.Log("Sending LocationInfo:" + JsonUtility.ToJson(globalPosition.positionInfo));
+                sender.SendPostRequest(globalPosition.positionInfo,"", baseUrl + ":" + port);
                 //sender.SendGetRequest("hello");
             }
+        }
+
+        public void SetUrl(string url)
+        {
+            baseUrl = url;
+        }
+
+        public void SetPort(string port)
+        {
+            this.port = port;
         }
     }
 }

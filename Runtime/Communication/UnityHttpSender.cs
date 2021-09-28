@@ -37,6 +37,8 @@ namespace JelleKUL.MeshAlignment
         {
             if (_baseUrl == "") _baseUrl = baseUrl;
 
+
+
             StartCoroutine(PostRequest(CombinedUrl(_baseUrl, postUrl), JsonUtility.ToJson(jsonObj)));
         }
 
@@ -63,6 +65,7 @@ namespace JelleKUL.MeshAlignment
 
         string CombinedUrl(string baseU, string extraU)
         {
+            if (!(baseU.StartsWith("http://") || baseU.StartsWith("https://"))) baseU = "http://" + baseU;
             if (baseU.EndsWith("/")) baseU = baseU.Substring(0, baseU.Length - 1);
             if (extraU.StartsWith("/")) extraU = extraU.Substring(1);
 
