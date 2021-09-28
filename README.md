@@ -18,4 +18,4 @@ This can be solved by sending the geo location to the device from another device
 
 This is enabled with 2 scripts:
 
-[UnityHttpListener](../master/Runtime/Communication/UnityHttpListener.cs)
+[UnityHttpListener](../main/Runtime/Communication/UnityHttpListener.cs)
