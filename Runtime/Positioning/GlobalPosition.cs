@@ -13,6 +13,7 @@ namespace JelleKUL.MeshAlignment
         public CoordinateSystem coordinateSystem = CoordinateSystem.Lambert72;
         public Vector3 position { get; private set; } = Vector3.zero; //the position of the device
         public float errorRadius { get; private set; }  = 0f; //the error radius of the device
+        public PositionInfo positionInfo = new PositionInfo();
         public LocationInfo lastLocation { get; private set; } //the last locationinfo, containing all kinds of info
         public bool hasData { get; private set; } = false; //has there been a succesfull connect
 
@@ -80,6 +81,7 @@ namespace JelleKUL.MeshAlignment
             }
             else
             {
+                Log("Found Location!");
                 // Access granted and location value could be retrieved
                 hasData = true;
                 gotLocation = true;
@@ -90,6 +92,9 @@ namespace JelleKUL.MeshAlignment
                 //convert the longitude and latitude to lambert
                 Vector3 gpsPos = new Vector3(Input.location.lastData.longitude, Input.location.lastData.latitude, Input.location.lastData.altitude);
                 position = CoordinateConverter.ConvertCoordinates(gpsPos, CoordinateSystem.Spherical, coordinateSystem);
+
+                positionInfo.position = position;
+                positionInfo.errorRadius = errorRadius;
                 
             }
 
@@ -117,4 +122,5 @@ namespace JelleKUL.MeshAlignment
             if(logData) Debug.Log("<color=orange>" + name + ": </color>" + log);
         }
     }
+
 }
