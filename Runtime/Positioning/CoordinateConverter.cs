@@ -28,7 +28,7 @@ namespace JelleKUL.MeshAlignment
                     {
                         case CoordinateSystem.Lambert72:
                             Vector2 coordinates = SphereToLambert72(input.x, input.y);
-                            return new Vector3(coordinates.x, coordinates.y, input.z);
+                            return new Vector3(coordinates.x, input.z, coordinates.y); // unity y is up and z is forward
 
                         //todo add more cases
 

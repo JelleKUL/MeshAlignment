@@ -40,6 +40,7 @@ The recieved [LocationInfo](https://docs.unity3d.com/ScriptReference/LocationInf
 - Belgium
     - Lambert 72
     - Lambert 2008
+    - Web Mercator
 
 Each one of these coordinate systems can be converted from and to with the [CoordinateConverter](../main/Runtime/Positioning/CoordinateConverter.cs).
 
