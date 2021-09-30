@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace JelleKUL.MeshAlignment
 {
+    // todo add more conversion methods
     // the different coordinates to have your measurements in
     public enum CoordinateSystem { Lambert72, Lambert2008, Spherical }
 
@@ -27,9 +28,12 @@ namespace JelleKUL.MeshAlignment
                     switch (toCoordinate)
                     {
                         case CoordinateSystem.Lambert72:
-                            Vector2 coordinates = SphereToLambert72(input.x, input.y);
+                            Vector3 belSphere = WSG48ToBel(input.x, input.y, input.z);
+                            Vector2 coordinates = SphereToLambert72(belSphere.x, belSphere.y);
                             return new Vector3(coordinates.x, input.z, coordinates.y); // unity y is up and z is forward
 
+                        case CoordinateSystem.Spherical:
+                            return input;
                         //todo add more cases
 
                         default:
@@ -84,6 +88,69 @@ namespace JelleKUL.MeshAlignment
 
             return new Vector2(x, y);
         }
+
+        public static Vector3 WSG48ToBel (float Lng, float Lat, float Alt)
+        {
+            float LatBel, LngBel;
+            float DLat, DLng;
+            float Dh;
+            float dy, dx, dz;
+            float da, df;
+            float LWa, Rm, Rn, LWb;
+            float LWf, LWe2;
+            float SinLat, SinLng;
+            float CoSinLat;
+            float CoSinLng;
+
+
+            float Adb;
+
+
+            //conversion to radians
+            Lat = (Mathf.PI / 180) * Lat;
+            Lng = (Mathf.PI / 180) * Lng;
+
+
+            SinLat = Mathf.Sin(Lat);
+            SinLng = Mathf.Sin(Lng);
+            CoSinLat = Mathf.Cos(Lat);
+            CoSinLng = Mathf.Cos(Lng);
+
+
+            dx = 125.8f;
+            dy = -79.9f;
+            dz = 100.5f;
+            da = 251.0f;
+            df = 0.000014192702f;
+
+
+            LWf = 1 / 297f;
+            LWa = 6378388;
+            LWb = (1 - LWf) * LWa;
+            LWe2 = (2 * LWf) - (LWf * LWf);
+            Adb = 1 / (1f - LWf);
+
+
+            Rn = LWa / Mathf.Sqrt(1 - LWe2 * SinLat * SinLat);
+            Rm = LWa * (1 - LWe2) / Mathf.Pow((1 - LWe2 * Lat * Lat), 1.5f);
+
+
+            DLat = -dx * SinLat * CoSinLng - dy * SinLat * SinLng + dz * CoSinLat;
+            DLat = DLat + da * (Rn * LWe2 * SinLat * CoSinLat) / LWa;
+            DLat = DLat + df * (Rm * Adb + Rn / Adb) * SinLat * CoSinLat;
+            DLat = DLat / (Rm + Alt);
+
+
+            DLng = (-dx * SinLng + dy * CoSinLng) / ((Rn + Alt) * CoSinLat);
+            Dh = dx * CoSinLat * CoSinLng + dy * CoSinLat * SinLng + dz * SinLat;
+            Dh = Dh - da * LWa / Rn + df * Rn * Lat * Lat / Adb;
+
+
+            LatBel = ((Lat + DLat) * 180) / Mathf.PI;
+            LngBel = ((Lng + DLng) * 180) / Mathf.PI;
+
+            return new Vector3(LngBel, LatBel, Alt);
+        } 
     }
 }
 

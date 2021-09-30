@@ -95,6 +95,7 @@ namespace JelleKUL.MeshAlignment
 
                 positionInfo.position = position;
                 positionInfo.errorRadius = errorRadius;
+                positionInfo.coordinateSystem = (int)coordinateSystem;
                 
             }
 
@@ -103,6 +104,17 @@ namespace JelleKUL.MeshAlignment
 
             //send the succes back to the callback
             callbackOnFinish(gotLocation);
+        }
+
+        public void SetCoordinateSystem(CoordinateSystem coordinateSystem)
+        {
+            this.coordinateSystem = coordinateSystem;
+        }
+
+        //todo add safety check
+        public void SetCoordinateSystem(int coordinateSystem)
+        {
+            this.coordinateSystem = (CoordinateSystem)coordinateSystem;
         }
 
         void OnPositionFound(bool succes)

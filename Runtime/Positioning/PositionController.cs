@@ -16,6 +16,9 @@ namespace JelleKUL.MeshAlignment
         private bool logData = true;
 
         [SerializeField]
+        private CoordinateSystem coordinateSystem;
+
+        [SerializeField]
         private PositionInfo lastReceivedPosition = new PositionInfo();
 
 
@@ -46,7 +49,9 @@ namespace JelleKUL.MeshAlignment
         {
             Log("Received a posiiotnInfo");
             lastReceivedPosition = positionInfo;
-            worldReferenceCenter.position = positionInfo.position - globalPositionOffset;
+            Vector3 newGlobalPosition = CoordinateConverter.ConvertCoordinates(positionInfo.position, (CoordinateSystem)positionInfo.coordinateSystem, coordinateSystem);
+            
+            worldReferenceCenter.position = newGlobalPosition - globalPositionOffset;
         }
 
         void Log(string log)

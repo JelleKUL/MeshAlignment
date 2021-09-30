@@ -317,6 +317,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 12433809756266740, guid: 1698920cd913f4b1888a20b6337c6be2, type: 3}
+      propertyPath: globalPositionOffset.x
+      value: 101102
+      objectReference: {fileID: 0}
+    - target: {fileID: 12433809756266740, guid: 1698920cd913f4b1888a20b6337c6be2, type: 3}
+      propertyPath: globalPositionOffset.z
+      value: 197047
+      objectReference: {fileID: 0}
     - target: {fileID: 12433809756266741, guid: 1698920cd913f4b1888a20b6337c6be2, type: 3}
       propertyPath: m_RootOrder
       value: 3

@@ -24,7 +24,7 @@ public class MeshCutter : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawSphere(startPosition, Mathf.Pow(rad,2));
+        Gizmos.DrawSphere(startPosition, 2);
     }
 
     /*
@@ -100,7 +100,7 @@ public class MeshCutter : MonoBehaviour
 
             for (int j = 0; j < 3; j++)
             {
-                if(Vector3.SqrMagnitude(oldVerts[oldTris[i+j]] - centerPostion) < radius)
+                if(Vector3.Distance(oldVerts[oldTris[i+j]],centerPostion) < radius)
                 {
                     //the vertex inside the bounding radius, so the we include this tri
                     triIsIn = true;
