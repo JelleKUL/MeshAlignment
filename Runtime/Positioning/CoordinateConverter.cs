@@ -7,7 +7,7 @@ namespace JelleKUL.MeshAlignment
 {
     // todo add more conversion methods
     // the different coordinates to have your measurements in
-    public enum CoordinateSystem { Lambert72, Lambert2008, Spherical }
+    public enum CoordinateSystem { Lambert72, Lambert2008, WGS84 }
 
     public class CoordinateConverter : MonoBehaviour
     {
@@ -24,15 +24,15 @@ namespace JelleKUL.MeshAlignment
         {
             switch (fromCoordinate)
             {
-                case CoordinateSystem.Spherical:
+                case CoordinateSystem.WGS84:
                     switch (toCoordinate)
                     {
                         case CoordinateSystem.Lambert72:
-                            Vector3 belSphere = WSG48ToBel(input.x, input.y, input.z);
-                            Vector2 coordinates = SphereToLambert72(belSphere.x, belSphere.y);
-                            return new Vector3(coordinates.x, input.z, coordinates.y); // unity y is up and z is forward
+                            Vector3 belSphere = WSG48ToBD72(input.x, input.y, input.z);
+                            Vector2 coordinates = BD72ToLambert72(belSphere.x, belSphere.y);
+                            return new Vector3(coordinates.x, belSphere.z, coordinates.y); // unity y is up and z is forward
 
-                        case CoordinateSystem.Spherical:
+                        case CoordinateSystem.WGS84:
                             return input;
                         //todo add more cases
 
@@ -58,7 +58,7 @@ namespace JelleKUL.MeshAlignment
         /// <param name="lng">the longitude in decimal belgium Datum</param>
         /// <param name="lat">the latitude in decimal belgium Datum</param>
         /// <returns>the lambert72 x & y coordinates</returns>
-        public static Vector2 SphereToLambert72(float lng, float lat)
+        public static Vector2 BD72ToLambert72(float lng, float lat)
         {
 
             float LongRef = 0.076042943f;      //=4°21'24"983
@@ -72,8 +72,8 @@ namespace JelleKUL.MeshAlignment
             float eSur2 = eLamb / 2f;
 
             //conversion to radians
-            lat *= (Mathf.PI / 180f);
-            lng *= (Mathf.PI / 180f);
+            lat *= Mathf.Deg2Rad;
+            lng *= Mathf.Deg2Rad; ;
 
 
             float eSinLatitude = eLamb * Mathf.Sin(lat);
@@ -89,59 +89,47 @@ namespace JelleKUL.MeshAlignment
             return new Vector2(x, y);
         }
 
-        public static Vector3 WSG48ToBel (float Lng, float Lat, float Alt)
+        public static Vector3 WSG48ToBD72 (float Lng, float Lat, float Alt)
         {
             float LatBel, LngBel;
-            float DLat, DLng;
             float Dh;
-            float dy, dx, dz;
-            float da, df;
-            float LWa, Rm, Rn, LWb;
-            float LWf, LWe2;
-            float SinLat, SinLng;
-            float CoSinLat;
-            float CoSinLng;
-
-
-            float Adb;
-
 
             //conversion to radians
-            Lat = (Mathf.PI / 180) * Lat;
-            Lng = (Mathf.PI / 180) * Lng;
+            Lat *= Mathf.Deg2Rad;
+            Lng *= Mathf.Deg2Rad;
 
 
-            SinLat = Mathf.Sin(Lat);
-            SinLng = Mathf.Sin(Lng);
-            CoSinLat = Mathf.Cos(Lat);
-            CoSinLng = Mathf.Cos(Lng);
+            float SinLat = Mathf.Sin(Lat);
+            float SinLng = Mathf.Sin(Lng);
+            float CoSinLat = Mathf.Cos(Lat);
+            float CoSinLng = Mathf.Cos(Lng);
 
 
-            dx = 125.8f;
-            dy = -79.9f;
-            dz = 100.5f;
-            da = 251.0f;
-            df = 0.000014192702f;
+            float dx = 125.8f;
+            float dy = -79.9f;
+            float dz = 100.5f;
+            float da = 251.0f;
+            float df = 0.000014192702f;
 
 
-            LWf = 1 / 297f;
-            LWa = 6378388;
-            LWb = (1 - LWf) * LWa;
-            LWe2 = (2 * LWf) - (LWf * LWf);
-            Adb = 1 / (1f - LWf);
+            float LWf = 1 / 297f;
+            float LWa = 6378388;
+            float LWb = (1 - LWf) * LWa;
+            float LWe2 = (2 * LWf) - (LWf * LWf);
+            float Adb = 1 / (1f - LWf);
 
 
-            Rn = LWa / Mathf.Sqrt(1 - LWe2 * SinLat * SinLat);
-            Rm = LWa * (1 - LWe2) / Mathf.Pow((1 - LWe2 * Lat * Lat), 1.5f);
+            float Rn = LWa / Mathf.Sqrt(1 - LWe2 * SinLat * SinLat);
+            float Rm = LWa * (1 - LWe2) / Mathf.Pow((1 - LWe2 * Lat * Lat), 1.5f);
 
 
-            DLat = -dx * SinLat * CoSinLng - dy * SinLat * SinLng + dz * CoSinLat;
-            DLat = DLat + da * (Rn * LWe2 * SinLat * CoSinLat) / LWa;
-            DLat = DLat + df * (Rm * Adb + Rn / Adb) * SinLat * CoSinLat;
-            DLat = DLat / (Rm + Alt);
+            float DLat = -dx * SinLat * CoSinLng - dy * SinLat * SinLng + dz * CoSinLat;
+            DLat += da * (Rn * LWe2 * SinLat * CoSinLat) / LWa;
+            DLat += df * (Rm * Adb + Rn / Adb) * SinLat * CoSinLat;
+            DLat /= (Rm + Alt);
 
 
-            DLng = (-dx * SinLng + dy * CoSinLng) / ((Rn + Alt) * CoSinLat);
+            float DLng = (-dx * SinLng + dy * CoSinLng) / ((Rn + Alt) * CoSinLat);
             Dh = dx * CoSinLat * CoSinLng + dy * CoSinLat * SinLng + dz * SinLat;
             Dh = Dh - da * LWa / Rn + df * Rn * Lat * Lat / Adb;
 
@@ -149,7 +137,7 @@ namespace JelleKUL.MeshAlignment
             LatBel = ((Lat + DLat) * 180) / Mathf.PI;
             LngBel = ((Lng + DLng) * 180) / Mathf.PI;
 
-            return new Vector3(LngBel, LatBel, Alt);
+            return new Vector3(LngBel, LatBel, Alt + Dh);
         } 
     }
 }

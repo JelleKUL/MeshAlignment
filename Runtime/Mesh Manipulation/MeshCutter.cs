@@ -20,7 +20,6 @@ public class MeshCutter : MonoBehaviour
     private int maxLoopsPerframe = 100;
 
     Mesh readyMesh;
-    bool ready = false;
 
     private void OnDrawGizmosSelected()
     {

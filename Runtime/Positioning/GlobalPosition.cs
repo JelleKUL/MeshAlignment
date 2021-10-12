@@ -91,7 +91,7 @@ namespace JelleKUL.MeshAlignment
 
                 //convert the longitude and latitude to lambert
                 Vector3 gpsPos = new Vector3(Input.location.lastData.longitude, Input.location.lastData.latitude, Input.location.lastData.altitude);
-                position = CoordinateConverter.ConvertCoordinates(gpsPos, CoordinateSystem.Spherical, coordinateSystem);
+                position = CoordinateConverter.ConvertCoordinates(gpsPos, CoordinateSystem.WGS84, coordinateSystem);
 
                 positionInfo.position = position;
                 positionInfo.errorRadius = errorRadius;
