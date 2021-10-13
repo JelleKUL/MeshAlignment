@@ -1,8 +1,8 @@
 {
-  "name": "com.jelle-kul.mesh-alignment",
+  "name": "com.jellekul.mesh-alignment",
   "version": "0.0.1",
   "displayName": "Mesh Alignment",
-  "description": "Tools to align new meshes to georeferenced meshes or pointclouds",
+  "description": "Tools to align new meshes to geo-referenced meshes or pointclouds",
   "keywords": [
     "mesh",
     "georeference",
@@ -13,5 +13,12 @@
     "email": "jelle.vermandere@kuleuven.be",
     "url": "http://www.jellever.be"
   },
-  "type": "tool"
+  "type": "tool",
+  "samples": [
+      {
+          "displayName": "Working Sample scenes",
+          "description": "Shows how everything works in practice",
+          "path": "Samples~/SampleProject"
+      }
+  ]
 }

@@ -9,6 +9,7 @@ Tools to help align meshes
 
 <!-- code_chunk_output -->
 
+- [Installation](#installation)
 - [Positioning](#positioning)
   - [Global Positioning](#global-positioning)
     - [Getting the GPS Coordinates](#getting-the-gps-coordinates)
@@ -28,6 +29,9 @@ Tools to help align meshes
 
 <!-- /code_chunk_output -->
 
+## Installation
+
+This can be imported as a UnityPackage in any existing Unity project through the [Package manager](https://docs.unity3d.com/Manual/Packages.html) with the Git url.
 
 ## Positioning
 
