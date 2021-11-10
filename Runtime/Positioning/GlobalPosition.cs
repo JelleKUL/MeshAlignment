@@ -53,7 +53,7 @@ namespace JelleKUL.MeshAlignment
             // Start service before querying location
             Input.location.Start();
 
-            Log("LocationSatus: " + Input.location.status);
+            Log("LocationStatus: " + Input.location.status);
 
             // Wait until service initializes
             int maxWait = maxWaitTime;

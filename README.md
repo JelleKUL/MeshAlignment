@@ -124,6 +124,12 @@ Post request contain serialized Json data.
 
 ### Geo location
 
+The geo-location is determined on a mobile device using Unity's [Location services](https://docs.unity3d.com/ScriptReference/LocationService.html), which returns a [LocationInfo](https://docs.unity3d.com/ScriptReference/LocationInfo.html).
+
+For web apps you can use [GeoLocation API](https://www.w3schools.com/html/html5_geolocation.asp)
+
+> For future version, the geolocation could be send directly to a cloud server. Since the bulk of the calculations are done on a seperate server, which has access to the large library of reference data
+
 ## Licensing
 
 The code in this project is licensed under MIT license.
