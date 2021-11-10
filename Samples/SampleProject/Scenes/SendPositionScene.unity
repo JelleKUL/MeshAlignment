@@ -1442,6 +1442,9 @@ MonoBehaviour:
   locationText: {fileID: 1494703022}
   baseUrl: http://192.168.0.137
   port: 1234
+  getUrl: localhost:5000/geolocation
+  postUrl: localhost:5000/geolocation
+  postMessage: '{"position":1234}'
 --- !u!114 &1192964433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1471,6 +1474,7 @@ MonoBehaviour:
   positionInfo:
     position: {x: 0, y: 0, z: 0}
     errorRadius: 0
+    coordinateSystem: 0
   logData: 0
   findLocationAtStart: 0
   maxWaitTime: 10

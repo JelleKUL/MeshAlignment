@@ -18,6 +18,9 @@ namespace JelleKUL.MeshAlignment
         [SerializeField]
         private string baseUrl = "http://192.168.0.237", port = "1234";
 
+        [SerializeField]
+        private string getUrl = "", postUrl = "", postMessage = "";
+
 
         // Start is called before the first frame update
         void Start()
@@ -52,6 +55,26 @@ namespace JelleKUL.MeshAlignment
         public void SetPort(string port)
         {
             this.port = port;
+        }
+
+        [ContextMenu("Send Position")]
+        public async void SendPosition()
+        {
+            HttpClient newClient = new HttpClient();
+
+            string result = await newClient.Post(postUrl,postMessage);
+
+            Debug.Log(result);
+        }
+
+        [ContextMenu("Get Position")]
+        public async void GetPosition()
+        {
+            HttpClient newClient = new HttpClient();
+
+            string result = await newClient.Get(postUrl);
+
+            Debug.Log(result);
         }
     }
 }

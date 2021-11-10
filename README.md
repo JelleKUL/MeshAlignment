@@ -47,6 +47,17 @@ This enables the ability to guess the current building the user is in. And for l
 If the device has a GPS module on board, then getting the GPS coordinates is easy with Unity's build in [Location Services](https://docs.unity3d.com/ScriptReference/LocationService.html).
 If the device doesn't have a GPS, the data can be send from a compatible device to the target device. Check out [Communication](#communication) on how to do this.
 
+The position is send over the internet in serialized Json
+```cs
+public class PositionInfo
+    {
+        public Vector3 position = Vector3.zero;
+        public float errorRadius = 0f;
+        public int coordinateSystem = 0;
+
+    }
+``
+
 #### Converting the Coordinates for Geo-reference
 
 The received [LocationInfo](https://docs.unity3d.com/ScriptReference/LocationInfo.html) data contains latitude, longitude and altitude data. General geo-referenced objects use one of the following Coordinate systems:
