@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace JelleKUL.MeshAlignment
@@ -36,11 +37,11 @@ namespace JelleKUL.MeshAlignment
 
         public void StartFindGlobalPosition()
         {
-            StartCoroutine(FindGlobalPosition(OnPositionFound));
+            //StartCoroutine(FindGlobalPosition(OnPositionFound));
         }
 
         //todo check if device supports location getting
-        public IEnumerator FindGlobalPosition(System.Action<bool> callbackOnFinish)
+        public async Task<bool> FindGlobalPosition()
         {
             Log("Starting Location search");
             bool gotLocation = false;
@@ -48,7 +49,7 @@ namespace JelleKUL.MeshAlignment
 
             // First, check if user has location service enabled
             if (!Input.location.isEnabledByUser)
-                callbackOnFinish(gotLocation);
+                return false;
 
             // Start service before querying location
             Input.location.Start();
@@ -59,7 +60,7 @@ namespace JelleKUL.MeshAlignment
             int maxWait = maxWaitTime;
             while ((Input.location.status == LocationServiceStatus.Initializing || Input.location.status == LocationServiceStatus.Stopped) && maxWait > 0)
             {
-                yield return new WaitForSeconds(1);
+                await Task.Yield();
                 Log("Connecting...");
                 maxWait--;
             }
@@ -68,7 +69,7 @@ namespace JelleKUL.MeshAlignment
             if (maxWait < 1)
             {
                 Log("Timed out");
-                callbackOnFinish(gotLocation);
+                return false;
             }
 
             Log("LocationSatus: " + Input.location.status);
@@ -77,7 +78,7 @@ namespace JelleKUL.MeshAlignment
             if (Input.location.status == LocationServiceStatus.Failed || Input.location.status == LocationServiceStatus.Stopped)
             {
                 Log("Unable to determine device location");
-                callbackOnFinish(gotLocation);
+                return false;
             }
             else
             {
@@ -103,7 +104,7 @@ namespace JelleKUL.MeshAlignment
             Input.location.Stop();
 
             //send the succes back to the callback
-            callbackOnFinish(gotLocation);
+            return gotLocation;
         }
 
         public void SetCoordinateSystem(CoordinateSystem coordinateSystem)

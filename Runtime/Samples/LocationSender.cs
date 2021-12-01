@@ -1,80 +1,57 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace JelleKUL.MeshAlignment
 {
     [RequireComponent(typeof(GlobalPosition))]
-    [RequireComponent(typeof(UnityHttpSender))]
     public class LocationSender : MonoBehaviour
     {
         [SerializeField]
-        private Text locationText;
+        private string locationUrl = "localhost:5000/geolocation";
+
+        [SerializeField]
+        private StringEvent OnLocationSend = new StringEvent(), OnLocationGet = new StringEvent();
 
         private GlobalPosition globalPosition;
-        private UnityHttpSender sender;
-
-        [SerializeField]
-        private string baseUrl = "http://192.168.0.237", port = "1234";
-
-        [SerializeField]
-        private string getUrl = "", postUrl = "", postMessage = "";
 
 
         // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             globalPosition = GetComponent<GlobalPosition>();
-            sender = GetComponent<UnityHttpSender>();
-        }
-
-        public void SendLocation()
-        {
-            locationText.text = "Finding Location...";
-            StartCoroutine(globalPosition.FindGlobalPosition(OnLocationFound));
-        }
-
-        void OnLocationFound(bool succes)
-        {
-            if (succes)
-            {
-                locationText.text = "LocationInfo:" + JsonUtility.ToJson(globalPosition.positionInfo);
-
-                Debug.Log("Sending LocationInfo:" + JsonUtility.ToJson(globalPosition.positionInfo));
-                sender.SendPostRequest(globalPosition.positionInfo,"", baseUrl + ":" + port);
-                //sender.SendGetRequest("hello");
-            }
         }
 
         public void SetUrl(string url)
         {
-            baseUrl = url;
+            locationUrl = url;
         }
 
-        public void SetPort(string port)
+        [ContextMenu("Send PositionInfo")]
+        public async Task<string> SendPositionInfo()
         {
-            this.port = port;
-        }
+            bool succes = await globalPosition.FindGlobalPosition();
+            if (!succes) return "ERROR";
 
-        [ContextMenu("Send Position")]
-        public async void SendPosition()
-        {
             HttpClient newClient = new HttpClient();
 
-            string result = await newClient.Post(postUrl,postMessage);
-
+            string result = await newClient.Post(locationUrl, globalPosition.positionInfo);
             Debug.Log(result);
+            OnLocationSend.Invoke(result);
+            return result;
         }
 
         [ContextMenu("Get Position")]
-        public async void GetPosition()
+        public async Task<string> GetPosition()
         {
             HttpClient newClient = new HttpClient();
 
-            string result = await newClient.Get(postUrl);
-
+            string result = await newClient.Get(locationUrl);
             Debug.Log(result);
+            OnLocationGet.Invoke(result);
+            return result;
         }
     }
 }

@@ -1,55 +1,56 @@
-using UnityEngine;
-using UnityEngine.Networking;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
-
+using UnityEngine;
 
 namespace JelleKUL.MeshAlignment
 {
-	/// <summary>
-    /// Sets up a server and receives GET and POST requests
-    /// </summary>
-	public class UnityHttpListener : MonoBehaviour
-	{
 
+    public class HttpServer : MonoBehaviour
+    {
+		[Header("Server Parameters")]
+		[SerializeField]
+		private bool startAtStart = true;
+		[SerializeField]
+		private bool logData = false;
 		[SerializeField]
 		[Min(0)]
 		private string httpPort = "1234";
-
 		[SerializeField]
+		[Tooltip("The HTML file to send when a request is made to the port")]
 		private TextAsset htmlResponseFile;
 
-		private HttpListener listener;
-		private Thread listenerThread;
-
-		string htmlString = "";
-
+		[Header("Incomming data")]
 		public string lastReceivedData = "";
-
 		public StringEvent OnDataReceived = new StringEvent();
 
 		private bool hasNewData = false;
+		private bool listening = false;
+		private HttpListener listener;
+		private Thread listenerThread;
+		private string htmlString = "";
 
 		void Start()
 		{
-			StartListening();
+			if(startAtStart) StartListening();
 		}
 
-        private void Update()
-        {
-            if (hasNewData)
-            {
+		private void Update()
+		{
+			if (hasNewData)
+			{
 				hasNewData = false;
 				OnDataReceived.Invoke(lastReceivedData);
 			}
 		}
 
-        /// <summary>
-        /// Start up the server
-        /// </summary>
-        public void StartListening()
+		/// <summary>
+		/// Start up the server
+		/// </summary>
+		public void StartListening()
 		{
 			listener = new HttpListener();
 			listener.Prefixes.Add("http://localhost:" + httpPort + "/");
@@ -62,21 +63,21 @@ namespace JelleKUL.MeshAlignment
 			listenerThread = new Thread(StartListener);
 			listenerThread.Start();
 			Debug.Log("Server Started @ " + IPLogger.GetLocalIPv4() + ":" + httpPort + "/");
+			listening = true;
 
 			if (htmlResponseFile != null)
 			{
-				Debug.Log("Preparing to send:");
-				Debug.Log(htmlResponseFile.text);
 				htmlString = htmlResponseFile.text;
 			}
 		}
 
 		/// <summary>
-        /// Stops the server
-        /// </summary>
+		/// Stops the server
+		/// </summary>
 		public void StopListening()
 		{
-			listener.Stop();
+			if(listening)listener.Stop();
+			listening = false;
 		}
 
 		private void StartListener()
@@ -92,8 +93,11 @@ namespace JelleKUL.MeshAlignment
 		{
 			var context = listener.EndGetContext(result);
 
-			Debug.Log("Method: " + context.Request.HttpMethod);
-			Debug.Log("LocalUrl: " + context.Request.Url.LocalPath);
+			if (logData)
+			{
+				Debug.Log("Method: " + context.Request.HttpMethod);
+				Debug.Log("LocalUrl: " + context.Request.Url.LocalPath);
+			}
 
 			// Obtain a response object.
 			HttpListenerResponse response = context.Response;
@@ -118,29 +122,28 @@ namespace JelleKUL.MeshAlignment
 
 			// Get a response stream and write the response to it.
 			response.ContentLength64 = buffer.Length;
-			System.IO.Stream output = response.OutputStream;
+			Stream output = response.OutputStream;
 			output.Write(buffer, 0, buffer.Length);
 
-			if (context.Request.QueryString.AllKeys.Length > 0)
-            {
+			if (logData && (context.Request.QueryString.AllKeys.Length > 0))
+			{
 				foreach (var key in context.Request.QueryString.AllKeys)
 				{
 					Debug.Log("Key: " + key + ", Value: " + context.Request.QueryString.GetValues(key)[0]);
 				}
 			}
-				
+
 			if (context.Request.HttpMethod == "POST")
 			{
 				Thread.Sleep(1000);
 				var data_text = new StreamReader(context.Request.InputStream,
 									context.Request.ContentEncoding).ReadToEnd();
-				Debug.Log(data_text);
+				if(logData) Debug.Log(data_text);
 				lastReceivedData = data_text.ToString();
-				hasNewData = true;
+				hasNewData = true; //use extra variable to invoke the event on the main thread
 			}
 
 			context.Response.Close();
 		}
-
 	}
 }
