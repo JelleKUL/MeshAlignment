@@ -56,7 +56,7 @@ public class PositionInfo
         public int coordinateSystem = 0;
 
     }
-``
+```
 
 #### Converting the Coordinates for Geo-reference
 
@@ -113,14 +113,22 @@ This can be solved by sending the geo location to the device from another device
 
 This is enabled with 2 scripts:
 
-#### [UnityHttpListener](../main/Runtime/Communication/UnityHttpListener.cs)
+#### [Httpserver](../main/Runtime/Communication/Httpserver.cs)
 
 This starts up a server @ the local IP address, given a desired port.
 
-#### [UnityHttpSender](../main/Runtime/Communication/UnityHttpSender.cs)
+#### [HttpClient](../main/Runtime/Communication/HttpClient.cs)
 
 Send either Get or post requests to a certain IP address and port.
-Post request contain serialized Json data.
+Post requests can contain serialized Json data.
+
+#### [Location Sender](../main/Runtime/Samples/LocationSender.cs)
+
+An example implementation of sending the global position to a webserver for processing
+
+#### [File Sender](../main/Runtime/Samples/FileSender.cs)
+
+An example implementation of sending a folder and all it's files to a server for processing
 
 ### Geo location
 
